@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Subscription Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script
+      src="https://static.dtpay-sandbox.tbinter.net/dist/checkout-v1.min.js"
+      type="text/javascript"
+    ></script>
+  </head>
 
+  <body style="background-color: darkslategray; color: white">
+    <h2 style="display: grid; place-items: center" id="loading">Loading...</h2>
+    <div style="display: grid; place-items: center" id="inputCreditCardInfo">
+      <h2>Input Credit Card Info</h2>
+      <div style="background-color: darkcyan; padding: 1.5%; border-radius: 2%">
+        <form id="my-payment-form" onsubmit="submitForm(); return false;">
+          <input
+            type="hidden"
+            name="payment_method_token"
+            id="payment_method_token"
+          />
+
+          <label for="cardholder_name">Name</label>
+          <input
+            type="text"
+            id="cardholder_name"
+            name="cardholder_name"
+          /><br /><br />
+
+          <label for="card-number">Card Number</label>
+          <!-- This is an anchor div for DT Pay's secure cardnumber element -->
+          <div
+            id="card-number"
+            style="width: 225px; height: 35px; border: 2px solid"
+          ></div>
+          <br />
+
+          <label for="month">Card Expiration Date</label>
+          <input type="text" id="month" name="month" maxlength="2" />
+          <input type="text" id="year" name="year" maxlength="4" /> <br />
+          <br />
+
+          <label for="cvv">CVC/CVV</label>
+          <!-- This is an anchor div for DT Pay's secure cvc2 element -->
+          <div
+            id="cvv"
+            style="width: 60px; height: 35px; border: 2px solid"
+          ></div>
+          <br />
+
+          <input id="submit-button" type="submit" value="Subscribe" disabled />
+        </form>
+      </div>
+    </div>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionKey = urlParams.get("sessionKey");
+
+      let dtPay;
+
+      if (sessionKey) {
+        document.getElementById("inputCreditCardInfo").style.display = "block";
+        document.getElementById("loading").style.display = "none";
+
+        dtPay = CheckoutExperience.init(
+          sessionKey,
+          {
+            cardNumberElement: "card-number",
+            cvc2Element: "cvv",
+          },
+          function () {
+            // ready handler
+            var submitButton = document.getElementById("submit-button");
+            submitButton.disabled = false;
+          }
+        );
+
+        dtPay.wip(function () {
+          var submitButton = document.getElementById("submit-button");
+          submitButton.disabled = true;
+        });
+
+        // in case of errors
+        dtPay.errors(function (errors) {
+          // Hellgate informs and hands over an errors array.
+
+          // The integrator should display these errors to the consumer more wisely ;)
+          for (var i = 0; i < errors.length; i++) {
+            console.log(
+              "Error processing card " +
+                errors[i]["key"] +
+                " | " +
+                errors[i]["attribute"] +
+                " | " +
+                errors[i]["message"]
+            );
+          }
+        });
+
+        // this eveent informs about the successful
+        dtPay.success(function () {
+          console.log("success");
+        });
+
+        dtPay.validation(function (status) {
+          console.log(status);
+        });
+      } else {
+        document.getElementById("inputCreditCardInfo").style.display = "none";
+        document.getElementById("loading").style.display = "block";
+        registerCustomerAndCreateOrder();
+      }
+
+      function registerCustomerAndCreateOrder() {
+        //TODO call the ccp payment backend
+        setTimeout(function () {
+          //assuming we call the BE and BE returns the session_key
+          const urlParams = new URLSearchParams(window.location.search);
+          urlParams.set("sessionKey", "201d2842-3d31-4c84-8bd2-c34851bf4c4a");
+          const newUrl = `${window.location.origin}${
+            window.location.pathname
+          }?${urlParams.toString()}`;
+          //reload the page with sessionKey query param
+          window.location.href = newUrl;
+        }, 3000);
+      }
+
+      function submitForm() {
+        dtPay.validate();
+
+        var ownFields = {};
+
+        // Read all required but non-sensitive fields
+        ownFields["cardholder_name"] =
+          document.getElementById("cardholder_name").value;
+        ownFields["month"] = document.getElementById("month").value;
+        ownFields["year"] = document.getElementById("year").value;
+
+        dtPay.processCard(ownFields, true);
+      }
+    </script>
+  </body>
+</html>
