@@ -11,7 +11,9 @@
   </head>
 
   <body style="background-color: darkslategray; color: white">
-    <h2 style="display: grid; place-items: center" id="loading">Loading...</h2>
+    <div style="display: grid; place-items: center" id="loading">
+      <h2>Loading...</h2>
+    </div>
     <div style="display: grid; place-items: center" id="inputCreditCardInfo">
       <h2>Input Credit Card Info</h2>
       <div style="background-color: darkcyan; padding: 1.5%; border-radius: 2%">
@@ -54,12 +56,12 @@
         </form>
       </div>
     </div>
-    <h2
+    <div
       style="display: grid; place-items: center; display: none"
       id="successfulSubscription"
     >
-      Successful Subscription!
-    </h2>
+      <h2>Successful Subscription!</h2>
+    </div>
     <script>
       let dtPay;
 
@@ -68,6 +70,8 @@
       function registerCustomerAndCreateOrder() {
         document.getElementById("inputCreditCardInfo").style.display = "none";
         document.getElementById("loading").style.display = "block";
+        document.getElementById("successfulSubscription").style.display =
+          "none";
         //TODO call the ccp payment backend
         setTimeout(function () {
           //assuming we call the BE and BE returns the session_key
@@ -79,6 +83,8 @@
       function processInputCreditCardInfo(sessionKey) {
         document.getElementById("inputCreditCardInfo").style.display = "block";
         document.getElementById("loading").style.display = "none";
+        document.getElementById("successfulSubscription").style.display =
+          "none";
 
         dtPay = CheckoutExperience.init(
           sessionKey,
@@ -118,6 +124,8 @@
         // this eveent informs about the successful
         dtPay.success(function () {
           //TODO call BE to void the order
+          document.getElementById("inputCreditCardInfo").style.display = "none";
+          document.getElementById("loading").style.display = "none";
           document.getElementById("successfulSubscription").style.display =
             "block";
         });
