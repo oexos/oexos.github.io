@@ -29,7 +29,7 @@
             name="cardholder_name"
           /><br /><br />
 
-          <label for="card-number">Card Number</label>
+          <label>Card Number</label>
           <!-- This is an anchor div for DT Pay's secure cardnumber element -->
           <div
             id="card-number"
@@ -37,7 +37,7 @@
           ></div>
           <br />
 
-          <label for="month">Card Expiration Date</label>
+          <label>Card Expiration Date</label>
           <input type="text" id="month" name="month" maxlength="2" />
           <input type="text" id="year" name="year" maxlength="4" /> <br />
           <br />
@@ -54,6 +54,12 @@
         </form>
       </div>
     </div>
+    <h2
+      style="display: grid; place-items: center; display: none"
+      id="successfulSubscription"
+    >
+      Successful Subscription!
+    </h2>
     <script>
       let dtPay;
 
@@ -65,7 +71,7 @@
         //TODO call the ccp payment backend
         setTimeout(function () {
           //assuming we call the BE and BE returns the session_key
-          const sessionKey = "c64bd966-ba58-4ec3-b896-3aa867615e4a";
+          const sessionKey = "ed8d1129-6e3b-4b11-8fec-61ce29dc1ee2";
           processInputCreditCardInfo(sessionKey);
         }, 3000);
       }
@@ -111,7 +117,9 @@
 
         // this eveent informs about the successful
         dtPay.success(function () {
-          console.log("success");
+          //TODO call BE to void the order
+          document.getElementById("successfulSubscription").style.display =
+            "block";
         });
 
         dtPay.validation(function (status) {
