@@ -31,7 +31,7 @@
             name="cardholder_name"
           /><br /><br />
 
-          <label>Card Number</label>
+          <div>Card Number</div>
           <!-- This is an anchor div for DT Pay's secure cardnumber element -->
           <div
             id="card-number"
@@ -39,7 +39,7 @@
           ></div>
           <br />
 
-          <label>Card Expiration Date</label>
+          <div>Card Expiration Date</div>
           <input type="text" id="month" name="month" maxlength="2" />
           <input type="text" id="year" name="year" maxlength="4" /> <br />
           <br />
@@ -68,23 +68,17 @@
       registerCustomerAndCreateOrder();
 
       function registerCustomerAndCreateOrder() {
-        document.getElementById("inputCreditCardInfo").style.display = "none";
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("successfulSubscription").style.display =
-          "none";
+        showHideUi("block", "none", "none");
         //TODO call the ccp payment backend
         setTimeout(function () {
           //assuming we call the BE and BE returns the session_key
-          const sessionKey = "f5070fd3-cbde-43ea-9864-7d88a1f96e02";
+          const sessionKey = "a1a42dd6-6a99-4857-85ff-024d772c78ec";
           processInputCreditCardInfo(sessionKey);
         }, 3000);
       }
 
       function processInputCreditCardInfo(sessionKey) {
-        document.getElementById("inputCreditCardInfo").style.display = "block";
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("successfulSubscription").style.display =
-          "none";
+        showHideUi("none", "block", "none");
 
         dtPay = CheckoutExperience.init(
           sessionKey,
@@ -124,10 +118,7 @@
         // this eveent informs about the successful
         dtPay.success(function () {
           //TODO call BE to void the order
-          document.getElementById("inputCreditCardInfo").style.display = "none";
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("successfulSubscription").style.display =
-            "block";
+          showHideUi("none", "none", "block");
         });
 
         dtPay.validation(function (status) {
@@ -147,6 +138,18 @@
         ownFields["year"] = document.getElementById("year").value;
 
         dtPay.processCard(ownFields, true);
+      }
+
+      function showHideUi(
+        loading,
+        inputCreditCardInfo,
+        successfulSubscription
+      ) {
+        document.getElementById("loading").style.display = loading;
+        document.getElementById("inputCreditCardInfo").style.display =
+          inputCreditCardInfo;
+        document.getElementById("successfulSubscription").style.display =
+          successfulSubscription;
       }
     </script>
   </body>
