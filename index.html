@@ -55,12 +55,22 @@
       </div>
     </div>
     <script>
-      const urlParams = new URLSearchParams(window.location.search);
-      const sessionKey = urlParams.get("sessionKey");
-
       let dtPay;
 
-      if (sessionKey) {
+      registerCustomerAndCreateOrder();
+
+      function registerCustomerAndCreateOrder() {
+        document.getElementById("inputCreditCardInfo").style.display = "none";
+        document.getElementById("loading").style.display = "block";
+        //TODO call the ccp payment backend
+        setTimeout(function () {
+          //assuming we call the BE and BE returns the session_key
+          const sessionKey = "c64bd966-ba58-4ec3-b896-3aa867615e4a";
+          processInputCreditCardInfo(sessionKey);
+        }, 3000);
+      }
+
+      function processInputCreditCardInfo(sessionKey) {
         document.getElementById("inputCreditCardInfo").style.display = "block";
         document.getElementById("loading").style.display = "none";
 
@@ -107,24 +117,6 @@
         dtPay.validation(function (status) {
           console.log(status);
         });
-      } else {
-        document.getElementById("inputCreditCardInfo").style.display = "none";
-        document.getElementById("loading").style.display = "block";
-        registerCustomerAndCreateOrder();
-      }
-
-      function registerCustomerAndCreateOrder() {
-        //TODO call the ccp payment backend
-        setTimeout(function () {
-          //assuming we call the BE and BE returns the session_key
-          const urlParams = new URLSearchParams(window.location.search);
-          urlParams.set("sessionKey", "201d2842-3d31-4c84-8bd2-c34851bf4c4a");
-          const newUrl = `${window.location.origin}${
-            window.location.pathname
-          }?${urlParams.toString()}`;
-          //reload the page with sessionKey query param
-          window.location.href = newUrl;
-        }, 3000);
       }
 
       function submitForm() {
