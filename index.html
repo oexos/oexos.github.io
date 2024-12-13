@@ -71,7 +71,7 @@
         showHideUi("block", "none", "none");
 
         const url =
-          "http://localhost:8080/ccp/payment/registerCustomerAndCreateOrder?azureUserId=yusuke.yamashita@ctafusodev.onmicrosoft.com&code=my-very-secret-key";
+          "https://ctadtdev.japaneast.cloudapp.azure.com/ccppayment/v1/ccp/payment/registerCustomerAndCreateOrder?code=test-key&azureUserId=yusuke.yamashita%40ctafusodev.onmicrosoft.com";
 
         try {
           const response = await fetch(url, {
