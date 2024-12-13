@@ -70,6 +70,10 @@
       async function registerCustomerAndCreateOrder() {
         showHideUi("block", "none", "none");
 
+        callBackendRegisterCustomerAndCreateOrderApi();
+      }
+
+      async function callBackendRegisterCustomerAndCreateOrderApi() {
         const url =
           "https://ctadtdev.japaneast.cloudapp.azure.com/ccppayment/v1/ccp/payment/registerCustomerAndCreateOrder?code=test-key&azureUserId=yusuke.yamashita%40ctafusodev.onmicrosoft.com";
 
@@ -81,7 +85,7 @@
           if (response.ok) {
             const jsonData = await response.json();
             console.log(jsonData);
-            processInputCreditCardInfo(jsonData.sessionKey);
+            processInputCreditCardInfo(jsonData.sessionKey, jsonData.paymentId);
           } else {
             throw new Error("Error: " + response.status);
           }
@@ -90,7 +94,25 @@
         }
       }
 
-      function processInputCreditCardInfo(sessionKey) {
+      async function callBackendVoidAPayment(paymentId) {
+        const url = `https://ctadtdev.japaneast.cloudapp.azure.com/ccppayment/v1/ccp/payment/voidAPayment?paymentId=${paymentId}&code=test-key&azureUserId=yusuke.yamashita%40ctafusodev.onmicrosoft.com`;
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+          });
+
+          if (response.ok) {
+            showHideUi("none", "none", "block");
+          } else {
+            throw new Error("Error: " + response.status);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function processInputCreditCardInfo(sessionKey, paymentId) {
         showHideUi("none", "block", "none");
 
         dtPay = CheckoutExperience.init(
@@ -130,8 +152,7 @@
 
         // this event informs about the successful
         dtPay.success(function () {
-          //TODO call BE to void the order
-          showHideUi("none", "none", "block");
+          callBackendVoidAPayment(paymentId);
         });
 
         dtPay.validation(function (status) {
