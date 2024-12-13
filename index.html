@@ -67,14 +67,27 @@
 
       registerCustomerAndCreateOrder();
 
-      function registerCustomerAndCreateOrder() {
+      async function registerCustomerAndCreateOrder() {
         showHideUi("block", "none", "none");
-        //TODO call the ccp payment backend
-        setTimeout(function () {
-          //assuming we call the BE and BE returns the session_key
-          const sessionKey = "a1a42dd6-6a99-4857-85ff-024d772c78ec";
-          processInputCreditCardInfo(sessionKey);
-        }, 3000);
+
+        const url =
+          "http://localhost:8080/ccp/payment/registerCustomerAndCreateOrder?azureUserId=yusuke.yamashita@ctafusodev.onmicrosoft.com&code=my-very-secret-key";
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+          });
+
+          if (response.ok) {
+            const jsonData = await response.json();
+            console.log(jsonData);
+            processInputCreditCardInfo(jsonData.sessionKey);
+          } else {
+            throw new Error("Error: " + response.status);
+          }
+        } catch (error) {
+          console.error(error);
+        }
       }
 
       function processInputCreditCardInfo(sessionKey) {
@@ -115,14 +128,14 @@
           }
         });
 
-        // this eveent informs about the successful
+        // this event informs about the successful
         dtPay.success(function () {
           //TODO call BE to void the order
           showHideUi("none", "none", "block");
         });
 
         dtPay.validation(function (status) {
-          console.log(status);
+          console.log("validation status: " + status);
         });
       }
 
