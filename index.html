@@ -94,24 +94,6 @@
         }
       }
 
-      async function callBackendVoidAPayment(paymentId) {
-        const url = `https://ctadtdev.japaneast.cloudapp.azure.com/ccppayment/v1/ccp/payment/voidAPayment?paymentId=${paymentId}&code=test-key&azureUserId=yusuke.yamashita%40ctafusodev.onmicrosoft.com`;
-
-        try {
-          const response = await fetch(url, {
-            method: "POST",
-          });
-
-          if (response.ok) {
-            showHideUi("none", "none", "block");
-          } else {
-            throw new Error("Error: " + response.status);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
       function processInputCreditCardInfo(sessionKey, paymentId) {
         showHideUi("none", "block", "none");
 
@@ -152,7 +134,7 @@
 
         // this event informs about the successful
         dtPay.success(function () {
-          callBackendVoidAPayment(paymentId);
+          showHideUi("none", "none", "block");
         });
 
         dtPay.validation(function (status) {
