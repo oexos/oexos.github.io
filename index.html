@@ -95,8 +95,6 @@
       }
 
       function processInputCreditCardInfo(sessionKey, paymentId) {
-        showHideUi("none", "block", "none");
-
         dtPay = CheckoutExperience.init(
           sessionKey,
           {
@@ -107,6 +105,7 @@
             // ready handler
             var submitButton = document.getElementById("submit-button");
             submitButton.disabled = false;
+            showHideUi("none", "block", "none");
           }
         );
 
