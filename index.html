@@ -105,7 +105,9 @@
             // ready handler
             var submitButton = document.getElementById("submit-button");
             submitButton.disabled = false;
-            showHideUi("none", "block", "none");
+            setTimeout(() => {
+              showHideUi("none", "block", "none");
+            }, 2000);
           }
         );
 
